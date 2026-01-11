@@ -43,8 +43,16 @@ int main(void) {
 		float rotation = (float)rand() / RAND_MAX * glm::two_pi<float>();
 		float size = 0.2f + ((float)rand() / RAND_MAX) * 0.2f;
 		
+		// Random velocity (different speed and direction for each asteroid)
+		float speed = 0.5f + ((float)rand() / RAND_MAX) * 2.0f; // 0.5 to 2.5
+		float direction = (float)rand() / RAND_MAX * glm::two_pi<float>();
+		glm::vec2 velocity = glm::vec2(cos(direction), sin(direction)) * speed;
+		
+		// Random rotation speed
+		float rotationSpeed = -2.0f + ((float)rand() / RAND_MAX) * 4.0f; // -2 to 2 radians per second
+		
 		GLuint asteroidTexture = loadTexture("Resources/Textures/asteroid.png");
-		Asteroid* asteroid = new Asteroid(glm::vec2(x, y), rotation, glm::vec2(size, size), asteroidTexture);
+		Asteroid* asteroid = new Asteroid(glm::vec2(x, y), rotation, glm::vec2(size, size), asteroidTexture, velocity, rotationSpeed);
 		addObject("asteroid", asteroid);
 	}
 	
