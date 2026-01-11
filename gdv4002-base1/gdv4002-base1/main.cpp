@@ -1,4 +1,8 @@
 #include "Engine.h"
+#include "Asteroid.h"
+#include <glm/gtc/constants.hpp>
+#include <cstdlib>
+#include <ctime>
 
 
 void updateGame(GLFWwindow* window, double tDelta);
@@ -9,8 +13,8 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 GameObject2D* player = nullptr;
 glm::vec2 playerVelocity = glm::vec2(0.0f, 0.0f);
 float rotationSpeed = 3.0f;
-float accelerationSpeed = 5.0f;
-float maxSpeed = 10.0f;
+float accelerationSpeed = 4.0f;
+float maxSpeed = 6.0f;
 
 
 int main(void) {
@@ -30,6 +34,19 @@ int main(void) {
 	//
 
 	player = addObject("player", glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.3f, 0.3f), "Resources/Textures/player1_ship.png");
+		
+	// Spawn asteroids
+	srand((unsigned int)time(nullptr));
+	for (int i = 0; i < 5; i++) {
+		float x = ((float)rand() / RAND_MAX - 0.5f) * getViewplaneWidth();
+		float y = ((float)rand() / RAND_MAX - 0.5f) * getViewplaneHeight();
+		float rotation = (float)rand() / RAND_MAX * glm::two_pi<float>();
+		float size = 0.2f + ((float)rand() / RAND_MAX) * 0.2f;
+		
+		GLuint asteroidTexture = loadTexture("Resources/Textures/asteroid.png");
+		Asteroid* asteroid = new Asteroid(glm::vec2(x, y), rotation, glm::vec2(size, size), asteroidTexture);
+		addObject("asteroid", asteroid);
+	}
 	
 	//
 	// Set callback functions
