@@ -70,6 +70,23 @@ void updateGame(GLFWwindow* window, double tDelta) {
 	}
 	
 	player->position += playerVelocity * (float)tDelta;
+	
+	float halfWidth = getViewplaneWidth() * 0.5f;
+	float halfHeight = getViewplaneHeight() * 0.5f;
+	
+	if (player->position.x > halfWidth) {
+		player->position.x = -halfWidth;
+	}
+	else if (player->position.x < -halfWidth) {
+		player->position.x = halfWidth;
+	}
+	
+	if (player->position.y > halfHeight) {
+		player->position.y = -halfHeight;
+	}
+	else if (player->position.y < -halfHeight) {
+		player->position.y = halfHeight;
+	}
 }
 
 void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods) {
