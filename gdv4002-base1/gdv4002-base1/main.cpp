@@ -1,10 +1,16 @@
 #include "Engine.h"
 
 
-// Function prototypes
+void updateGame(GLFWwindow* window, double tDelta);
+void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
-// Global Variables
+// Global variables
+GameObject2D* player = nullptr;
+glm::vec2 playerVelocity = glm::vec2(0.0f, 0.0f);
+float rotationSpeed = 3.0f;
+float accelerationSpeed = 5.0f;
+float maxSpeed = 10.0f;
 
 
 int main(void) {
@@ -23,11 +29,14 @@ int main(void) {
 	// Setup game scene objects here
 	//
 
+	player = addObject("player", glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.3f, 0.3f), "Resources/Textures/player1_ship.png");
 	
 	//
 	// Set callback functions
 	//
 	
+	setUpdateFunction(updateGame, false);
+	setKeyboardHandler(keyboardHandler);
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
@@ -37,4 +46,35 @@ int main(void) {
 
 	// return success :)
 	return 0;
+}
+
+void updateGame(GLFWwindow* window, double tDelta) {
+	
+	if (!player) return;
+	
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		player->orientation -= rotationSpeed * tDelta;
+	}
+	
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		player->orientation += rotationSpeed * tDelta;
+	}
+	
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		glm::vec2 forward = glm::vec2(cos(player->orientation), sin(player->orientation));
+		playerVelocity += forward * accelerationSpeed * (float)tDelta;
+		float speed = glm::length(playerVelocity);
+		if (speed > maxSpeed) {
+			playerVelocity = glm::normalize(playerVelocity) * maxSpeed;
+		}
+	}
+	
+	player->position += playerVelocity * (float)tDelta;
+}
+
+void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
 }
