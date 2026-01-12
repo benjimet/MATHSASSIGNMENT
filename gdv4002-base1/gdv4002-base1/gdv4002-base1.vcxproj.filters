@@ -18,6 +18,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+      <ClCompile Include="Bullet.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
       <ClCompile Include="Asteroid.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -48,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
       <ClInclude Include="Asteroid.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+        <ClInclude Include="Bullet.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">

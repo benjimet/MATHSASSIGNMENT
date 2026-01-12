@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Asteroid.h"
+#include "Bullet.h"
 #include <glm/gtc/constants.hpp>
 #include <cstdlib>
 #include <ctime>
@@ -15,6 +16,8 @@ glm::vec2 playerVelocity = glm::vec2(0.0f, 0.0f);
 float rotationSpeed = 3.0f;
 float accelerationSpeed = 4.0f;
 float maxSpeed = 6.0f;
+float bulletSpeed = 8.0f;
+static bool previousMouseState = false;
 
 
 int main(void) {
@@ -111,6 +114,31 @@ void updateGame(GLFWwindow* window, double tDelta) {
 	}
 	else if (player->position.y < -halfHeight) {
 		player->position.y = halfHeight;
+	}
+	
+	// Shooting bullets (left mouse button)
+	bool currentMouseState = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS);
+	if (currentMouseState && !previousMouseState) {
+		// Spawn bullet at player position in facing direction
+		glm::vec2 forward = glm::vec2(cos(player->orientation), sin(player->orientation));
+		glm::vec2 bulletVelocity = forward * bulletSpeed;
+		
+		GLuint bulletTexture = loadTexture("Resources/Textures/bullet.png");
+		Bullet* bullet = new Bullet(player->position, player->orientation, glm::vec2(0.1f, 0.1f), bulletTexture, bulletVelocity);
+		addObject("bullet", bullet);
+	}
+	previousMouseState = currentMouseState;
+	
+	// bye-bye bullets
+	GameObjectCollection bullets = getObjectCollection("bullet");
+	for (int i = 0; i < bullets.objectCount; i++) {
+		if (bullets.objectArray[i]) {
+			GameObject2D* bullet = bullets.objectArray[i];
+			if (bullet->position.x > halfWidth || bullet->position.x < -halfWidth ||
+				bullet->position.y > halfHeight || bullet->position.y < -halfHeight) {
+				deleteObject(bullet);
+			}
+		}
 	}
 }
 
